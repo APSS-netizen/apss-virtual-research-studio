@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="color-scheme" content="dark"/>
+<title>APSS Virtual Research Studio｜獨立展示原型 v0.1.2</title>
+<style>
+:root{--bg:#08121f;--panel:#101d2d;--panel2:#142338;--bd:#2a3d53;--txt:#edf4fa;--muted:#90a5b9;--mint:#58dbc6;--gold:#e6ba6c;--warn:#ffbc85;--red:#fa9496}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Microsoft JhengHei","Noto Sans TC",sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:var(--txt)}button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+body{min-height:100vh;background:radial-gradient(ellipse at 42% -20%,#183b50 0,transparent 48%),#08121f}.shell{max-width:1800px;margin:auto;padding:23px 25px 38px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:3px 3px 21px;border-bottom:1px solid #263949;margin-bottom:20px}.brand{display:flex;align-items:center;gap:15px}.emblem{width:55px;height:55px;border:1px solid #5ddac5;border-radius:15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,#1f5160,#0f2635);box-shadow:0 5px 28px #38b6a421;font-weight:800;letter-spacing:-1px;font-size:16px}.brand small{display:block;letter-spacing:.2em;color:var(--mint);font-size:10px;font-weight:700}.brand h1{font-size:20px;margin:3px 0 2px;letter-spacing:.01em;font-weight:730}.brand p{margin:0;color:var(--muted);font-size:12px}.actions{display:flex;gap:9px;flex-wrap:wrap}.tag{border:1px solid #516675;border-radius:100px;padding:8px 11px;color:#bfd4dc;font-size:11px;background:#173044}.tag::before{content:'●';color:var(--gold);margin-right:7px}.btn{border:1px solid #39516a;background:#182b3e;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:650;transition:background .2s}.btn:hover{background:#29435a}.btn.primary{background:#217a76;border-color:#2caaa0}.btn.primary:hover{background:#29978f}.btn.flat{background:transparent}.btn.sm{padding:6px 9px;font-size:11px}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:17px;align-items:start}.panel{background:linear-gradient(150deg,#132237,#0c192a);border:1px solid var(--bd);border-radius:16px;overflow:hidden;box-shadow:0 14px 28px #00000013}.section{padding:18px;border-bottom:1px solid #26374d}.section:last-child{border-bottom:0}.section-head{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:13px}.section-head h2{font-size:13px;margin:0;font-weight:740;letter-spacing:.035em}.muted{color:var(--muted)}.dim{color:#8dabc0;font-size:11px}.number{color:var(--mint);font-weight:800;font-size:11px}.stat{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{padding:13px 11px;border:1px solid #30475a;border-radius:10px;background:#16263b}.metric strong{display:block;font-size:23px;font-variant-numeric:tabular-nums}.metric small{font-size:10px;color:var(--muted)}.metric strong.warn{color:#e6ba6c}.notice{font-size:11px;line-height:1.6;padding:11px;border-left:2px solid #dfb577;background:#302d293f;color:#e3caa1;border-radius:3px 8px 8px 3px}
+.agent{border:1px solid transparent;border-radius:11px;margin:4px 0;padding:10px 8px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#122238}.agent:hover,.agent.active{background:#1a3549;border-color:#487276}.avatar{width:37px;height:37px;border-radius:11px;flex:0 0 37px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#263e4f}.agent-info{flex:1;min-width:0}.agent strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.agent small{font-size:10px;color:var(--muted)}.statusdot{width:7px;height:7px;border-radius:50%;background:#70c8ba;box-shadow:0 0 10px #70c8ba55}.statusdot.idle{background:#d8c48e}.statusdot.review{background:#f7a59f}.statusdot.done{background:#9ab4e6}
+.scene-panel{position:relative;min-height:590px;overflow:hidden;background:radial-gradient(ellipse at 55% 34%,#284d5b 0%,#112739 51%,#0b1b2e 100%)}.scene-head{position:absolute;top:17px;left:18px;right:18px;z-index:2;pointer-events:none;display:flex;align-items:flex-start;justify-content:space-between}.scene-head h2{margin:0;font-size:17px;letter-spacing:.08em}.scene-head span{display:block;margin-top:4px;font-size:10px;color:#c3d4df;letter-spacing:.13em}.scene-head .flags{display:flex;gap:6px}.scene-head .flag{font-size:10px;border:1px solid #63808a80;color:#a6c9cf;padding:6px 8px;border-radius:30px;background:#0c22349e}
+#scene{display:block;width:100%;height:590px;cursor:grab;touch-action:pan-y}#scene.drag{cursor:grabbing}.scene-help{position:absolute;bottom:18px;left:18px;right:18px;display:flex;align-items:center;justify-content:space-between;gap:7px;pointer-events:none}.scene-help span{font-size:10px;color:#c0d4e0;background:#061b2bbd;border:1px solid #39596d9c;padding:8px 10px;border-radius:8px}.scene-controls{display:flex;gap:7px;pointer-events:auto}.scene-controls button{background:#0c2338cf;border:1px solid #416171;color:#e1f5f7;padding:8px 11px;border-radius:8px}
+.subtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tile{padding:15px;border:1px solid var(--bd);background:#112034;border-radius:12px}.tile h3{font-size:12px;margin:0 0 8px}.tile p{font-size:11px;color:var(--muted);line-height:1.65;margin:0}.tile .k{color:var(--mint);font-weight:700}
+.mr{padding:12px;border:1px solid #31475b;border-radius:10px;margin-bottom:9px;background:#13253a}.mr:last-child{margin-bottom:0}.mr-title{display:flex;align-items:flex-start;gap:8px}.mr .num{font-size:10px;font-weight:800;color:#70dbc8;padding:3px 5px;background:#163d43;border-radius:5px}.mr strong{font-size:11px;line-height:1.6}.mr small{font-size:10px;color:var(--muted);display:block;margin:8px 0 0}.mr .source{margin-top:9px;color:#efd19d;font-size:10px;display:flex;gap:6px;align-items:center}.source i{width:6px;height:6px;background:#efd19d;border-radius:50%;display:inline-block}
+.control-body{padding:15px}.control-body label{font-size:11px;color:#9eb9c9;display:block;margin:0 0 7px}select,input[type=text]{width:100%;min-height:39px;border:1px solid #3a5266;background:#091b2c;color:#f0f6fa;border-radius:8px;padding:8px 10px;outline:0}.action-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.action-grid button{border:1px solid #34536c;border-radius:8px;background:#193349;padding:9px 6px;font-size:11px}.action-grid button:hover{border-color:#5cd3c2}.action-grid button.selected{background:#23645f;border-color:#71d2c3}.tasks{max-height:230px;overflow:auto}.task{display:flex;gap:8px;padding:9px 0;font-size:11px;line-height:1.5;border-bottom:1px solid #2b4152}.task:last-child{border-bottom:0}.task input{accent-color:#65d0c4;margin-top:3px}.task.done span{text-decoration:line-through;color:#667b90}.add-task{display:flex;gap:6px;margin-top:9px}.add-task .btn{white-space:nowrap}.footer{padding:18px 2px 0;display:flex;justify-content:space-between;gap:20px;color:#6f879e;font-size:11px}.footer b{color:#91b8bf}.sr-only{position:absolute;left:-9999px}
+@media(max-width:1310px){.layout{grid-template-columns:230px minmax(0,1fr)}.right{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr}.right>.panel{min-width:0}.scene-panel{min-height:520px}#scene{height:520px}.subtiles{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:740px){.shell{padding:12px}.top{align-items:flex-start;flex-direction:column}.brand h1{font-size:16px}.brand p{font-size:11px}.layout{display:block}.layout>.panel,.main,.right{margin-bottom:12px}.left{display:grid;grid-template-columns:1fr}.right{display:block}#scene{height:430px}.scene-panel{min-height:430px}.scene-head h2{font-size:13px}.scene-head .flags{display:none}.scene-help span{display:none}.subtiles{grid-template-columns:1fr}.footer{flex-direction:column;gap:4px}.stat{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+<div class="brand"><div class="emblem">APSS</div><div><small>VIRTUAL RESEARCH STUDIO · V0.1.2</small><h1>亞太安全與戰略研究獨立工作室</h1><p>獨立開發原型｜Windows 11 本機版｜不連接外部資料</p></div></div>
+<div class="actions"><span class="tag">DEMO · 所有動態均為模擬</span><button class="btn flat" id="resetBtn">重設示範</button><button class="btn primary" id="exportBtn">匯出本機資料</button></div>
+</header>
+<div class="layout">
+<aside class="left panel">
+ <div class="section"><div class="section-head"><h2>研究管理總覽</h2><span class="number">2026</span></div><div class="stat"><div class="metric"><strong>04</strong><small>MR 研究項目</small></div><div class="metric"><strong class="warn">00</strong><small>已介接真實資料源</small></div></div><p class="notice">此版本只有互動畫面及本機任務紀錄。未接入 ChatGPT MR 排程、執行日誌、電子郵件或自動化系統。</p></div>
+ <div class="section"><div class="section-head"><h2>虛擬研究員</h2><span class="dim">點選切換席位</span></div><div id="agentList"></div></div>
+ <div class="section"><div class="section-head"><h2>本機待辦事項</h2><span class="number" id="taskCount">0 / 0</span></div><div class="tasks" id="tasks"></div><div class="add-task"><input type="text" id="taskInput" placeholder="新增本機待辦…" maxlength="60" aria-label="新增待辦事項"/><button class="btn sm primary" id="addTask">新增</button></div><p class="dim" style="line-height:1.5">任務存於這台瀏覽器；不會下達研究指令給 AI。</p></div>
+</aside>
+<main class="main">
+ <section class="panel scene-panel"><div class="scene-head"><div><h2>APSS RESEARCH OPERATIONS</h2><span>INDEPENDENT VIRTUAL OFFICE · ISOMETRIC VIEW</span></div><div class="flags"><span class="flag">4 WORKSTATIONS</span><span class="flag">LOCAL ONLY</span></div></div><canvas id="scene" aria-label="可旋轉、縮放及點選研究員的 3D 虛擬研究室">您的瀏覽器不支援 Canvas。</canvas><div class="scene-help"><span>拖曳旋轉視角 · 滾輪縮放 · 點選研究員</span><div class="scene-controls"><button type="button" id="rotateL" aria-label="向左旋轉">↶</button><button type="button" id="rotateR" aria-label="向右旋轉">↷</button><button type="button" id="zoomIn" aria-label="放大">＋</button><button type="button" id="zoomOut" aria-label="縮小">－</button><button type="button" id="resetCamera">重置視角</button></div></div></section>
+ <div class="subtiles"><div class="tile"><h3>研究檔案中心</h3><p><span class="k">SRA / PSA / IPR / OM</span> 等研究類別將逐步整合。此版尚未讀取實際文件。</p></div><div class="tile"><h3>驗證與證據</h3><p>未來顯示每個 MR 的<span class="k">最新實際執行</span>、來源證據、通知結果及錯誤紀錄。</p></div><div class="tile"><h3>權限與資料保護</h3><p>目前<span class="k">不需登入、不需 API 金鑰</span>，離線可用；資料只留在本機瀏覽器。</p></div></div>
+</main>
+<aside class="right">
+ <section class="panel"><div class="section"><div class="section-head"><h2>四項 MR 長期監測</h2><span class="dim">資料源狀態</span></div><div id="mrList"></div></div></section>
+ <section class="panel" style="margin-top:14px"><div class="section"><div class="section-head"><h2>模擬席位控制</h2><span class="dim">不執行實際任務</span></div><div class="control-body" style="padding:0"><label for="personSelect">選擇虛擬研究員</label><select id="personSelect"></select><label style="margin-top:15px">示範動畫狀態</label><div class="action-grid" id="statusActions"><button type="button" data-status="work">模擬工作中</button><button type="button" data-status="idle">模擬待命</button><button type="button" data-status="review">模擬待核對</button><button type="button" data-status="done">模擬完成</button></div><div id="selectedDetail" style="margin-top:14px;color:#a1b8c8;font-size:11px;line-height:1.7"></div></div></div></section>
+ </aside>
+</div>
+<footer class="footer"><span>APSS Virtual Research Studio v0.1.1 · 獨立原創示範介面 · 無外部程式庫</span><span><b>重要：</b>畫面狀態不是 MR 實際運作或通知正常的證據。</span></footer>
+</div>
+<script>
+'use strict';
+const initialTasks=[{text:'建立 APSS 虛擬研究室基本架構（示範）',done:true},{text:'確定四項 MR 資料欄位與驗證標準',done:false},{text:'規劃研究文件與來源資料介接',done:false}];
+const roles=[
+ {name:'遠東暨西太平洋研究席',short:'遠東與西太平洋',color:'#66cfc1',icon:'🌏',full:'遠東暨西太平洋戰略態勢觀察',x:-2.75,z:-0.95},
+ {name:'中東／南亞研究席',short:'中東與南亞',color:'#d7aa70',icon:'🧭',full:'中東／南亞地區輿情追蹤',x:2.75,z:-0.95},
+ {name:'跨區域衝突研究席',short:'跨區域武裝衝突',color:'#ed988d',icon:'🛡',full:'跨區域武裝衝突連動觀察',x:-2.75,z:1.65},
+ {name:'人工智慧研究席',short:'人工智慧與治理',color:'#9ba8e3',icon:'◈',full:'人工智慧發展、跨域應用、治理與戰略影響觀察',x:2.75,z:1.65}
+];
+const statuses={work:['模擬工作中','work'],idle:['模擬待命','idle'],review:['模擬待核對','review'],done:['模擬完成','done']};
+function getSaved(){try{return JSON.parse(localStorage.getItem('apss_studio_v01')||'null')}catch{return null}}
+const saved=getSaved();
+const state={selected:0,staff:roles.map((_,i)=>saved?.staff?.[i]&&statuses[saved.staff[i]]?saved.staff[i]:'work'),tasks:Array.isArray(saved?.tasks)?saved.tasks.filter(t=>typeof t.text==='string'&&typeof t.done==='boolean').slice(0,40):initialTasks};
+function save(){try{localStorage.setItem('apss_studio_v01',JSON.stringify({staff:state.staff,tasks:state.tasks}))}catch(e){console.warn('Local save unavailable',e)}}
+const $=id=>document.getElementById(id);
+function escapeHTML(text){return text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
+function render(){
+ $('agentList').innerHTML=roles.map((r,i)=>`<div role="button" tabindex="0" data-agent="${i}" class="agent ${state.selected===i?'active':''}"><div class="avatar">${r.icon}</div><div class="agent-info"><strong>${escapeHTML(r.name)}</strong><small>${statuses[state.staff[i]][0]}</small></div><i class="statusdot ${statuses[state.staff[i]][1]}"></i></div>`).join('');
+ $('personSelect').innerHTML=roles.map((r,i)=>`<option value="${i}">${escapeHTML(r.name)}</option>`).join('');$('personSelect').value=String(state.selected);
+ $('statusActions').querySelectorAll('button').forEach(b=>b.classList.toggle('selected',b.dataset.status===state.staff[state.selected]));
+ $('selectedDetail').innerHTML=`<strong style="color:#e8f6fb">${escapeHTML(roles[state.selected].full)}</strong><div style="margin-top:7px">真實執行：未介接<br>最後執行：無資料<br>通知及電子郵件：未介接<br>圖上動畫：${statuses[state.staff[state.selected]][0]}</div>`;
+ $('mrList').innerHTML=roles.map((r,i)=>`<div class="mr"><div class="mr-title"><span class="num">MR ${String(i+1).padStart(2,'0')}</span><strong>${escapeHTML(r.full)}</strong></div><small>執行紀錄：未介接 · 通知紀錄：未介接</small><div class="source"><i></i>真實資料源未連接</div></div>`).join('');
+ $('taskCount').textContent=`${state.tasks.filter(x=>x.done).length} / ${state.tasks.length}`;
+ $('tasks').innerHTML=state.tasks.length?state.tasks.map((t,i)=>`<label class="task ${t.done?'done':''}"><input type="checkbox" data-task="${i}" ${t.done?'checked':''}/><span>${escapeHTML(t.text)}</span></label>`).join(''):'<div class="dim">尚無本機任務。</div>';
+}
+$('agentList').addEventListener('click',e=>{let p=e.target.closest('[data-agent]');if(p){state.selected=+p.dataset.agent;render()}});
+$('agentList').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){let p=e.target.closest('[data-agent]');if(p){e.preventDefault();state.selected=+p.dataset.agent;render()}}});
+$('personSelect').addEventListener('change',e=>{state.selected=+e.target.value;render()});
+$('statusActions').addEventListener('click',e=>{let b=e.target.closest('[data-status]');if(!b)return;state.staff[state.selected]=b.dataset.status;save();render()});
+$('tasks').addEventListener('change',e=>{let t=e.target.closest('[data-task]');if(t){state.tasks[+t.dataset.task].done=t.checked;save();render()}});
+function addTask(){let val=$('taskInput').value.trim();if(!val||state.tasks.length>=40)return;state.tasks.push({text:val,done:false});$('taskInput').value='';save();render()}
+$('addTask').addEventListener('click',addTask);$('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+$('resetBtn').addEventListener('click',()=>{if(!confirm('要重設所有本機示範狀態及待辦清單嗎？'))return;state.staff=['work','work','work','work'];state.tasks=structuredClone(initialTasks);save();render()});
+$('exportBtn').addEventListener('click',()=>{let obj={schema:'apss-studio-demo-v0.1',exportedAt:new Date().toISOString(),source:'browser-local',realMRConnected:false,staff:roles.map((r,i)=>({mr:r.full,visualSimulationStatus:state.staff[i]})),tasks:state.tasks};let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='APSS-Virtual-Studio-Local-Demo.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});
+render();
+
+// Independent, dependency-free 3D orthographic scene renderer.
+// Geometry is modeled in world-space x/y/z and projected on a 2D canvas.
+const canvas=$('scene');const ctx=canvas.getContext('2d');let cw=800,ch=590,dpr=1;
+const camera={yaw:-0.58,pitch:0.76,zoom:1};const objects=[];const actors=[];let lastMouse=null;let dragging=false;let moved=false;let tick=0;
+function resize(){let r=canvas.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);cw=r.width;ch=r.height;canvas.width=Math.round(cw*dpr);canvas.height=Math.round(ch*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
+new ResizeObserver(resize).observe(canvas);resize();
+function project(x,y,z){let c=Math.cos(camera.yaw),s=Math.sin(camera.yaw),wx=x*c-z*s,wz=x*s+z*c;let sc=Math.min(cw/15.6,ch/11.5)*camera.zoom;return {x:cw/2+wx*sc,y:ch*.59+(wz*Math.sin(camera.pitch)-y*Math.cos(camera.pitch))*sc,depth:wz*Math.cos(camera.pitch)+y*Math.sin(camera.pitch)}}
+function shade(hex,f=1){let h=hex.replace('#','');if(h.length!==6)return hex;let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return `rgb(${Math.min(255,Math.round(r*f))},${Math.min(255,Math.round(g*f))},${Math.min(255,Math.round(b*f))})`}
+function polygon(points,color,alpha=1){let vertices=points.map(p=>project(...p));let depth=vertices.reduce((s,p)=>s+p.depth,0)/vertices.length;objects.push({vertices,depth,color,alpha})}
+function block(x,y,z,w,h,d,color){let x0=x-w/2,x1=x+w/2,y0=y,y1=y+h,z0=z-d/2,z1=z+d/2;
+ const a=[x0,y0,z0],b=[x1,y0,z0],c=[x1,y0,z1],d0=[x0,y0,z1],e=[x0,y1,z0],f=[x1,y1,z0],g=[x1,y1,z1],h0=[x0,y1,z1];
+ polygon([a,b,c,d0],shade(color,.60));polygon([e,f,g,h0],shade(color,1.17));polygon([a,e,h0,d0],shade(color,.70));polygon([b,f,g,c],shade(color,.88));polygon([a,b,f,e],shade(color,.81));polygon([d0,c,g,h0],shade(color,.98))}
+function decal(x,y,z,w,d,color){polygon([[x-w/2,y,z-d/2],[x+w/2,y,z-d/2],[x+w/2,y,z+d/2],[x-w/2,y,z+d/2]],color)}
+function groundShadow(x,z,rx,rz){let pts=[];for(let i=0;i<20;i++){let a=Math.PI*2*i/20;pts.push([x+Math.cos(a)*rx,.023,z+Math.sin(a)*rz])}polygon(pts,'#102438',.50)}
+function plant(x,z,sc=1){groundShadow(x,z,.50,.48);block(x,.02,z,.45*sc,.45*sc,.45*sc,'#aa7b58');for(let i=0;i<5;i++){let a=i*2.4;block(x+Math.cos(a)*.18*sc,.46*sc,z+Math.sin(a)*.18*sc,.28*sc,(.62+i%2*.15)*sc,.27*sc,i%2?'#358875':'#499a7b')}}
+function desk(r){let x=r.x,z=r.z;groundShadow(x,z,.95,1.4);
+ block(x-.95,.07,z-.27,.22,.72,.2,'#3f6470');block(x+.95,.07,z-.27,.22,.72,.2,'#3f6470');block(x,.72,z-.27,2.35,.15,1.17,'#b7895a');
+ block(x,.88,z-.57,.77,.48,.08,'#21384b');block(x,.90,z-.65,.68,.34,.05,'#183f50');decal(x,.88,z-.11,.7,.32,'#31485b');
+ block(x+.76,.90,z-.44,.16,.09,.17,r.color);block(x-.73,.90,z-.55,.20,.28,.17,'#e2d7c7');
+ block(x,.17,z+.83,.70,.22,.64,'#506b79');block(x,.27,z+1.12,.70,.65,.12,'#47606b');
+ decal(x,.875,z-.86,1.1,.07,r.color);
+}
+function avatar(r,index,ms){let status=state.staff[index];let idle=status==='idle';let move=idle?0.20*Math.sin(ms*.0007+index):0;let x=r.x+move,z=r.z+.80+(idle?0.14*Math.cos(ms*.0005+index):0);if(index===state.selected)groundShadow(x,z,.56,.52);
+ let s= status==='work' ?Math.sin(ms*.012+index)*.075:Math.sin(ms*.002+index)*.026;
+ const suit=r.color;
+ block(x-.16,.05,z,.17,.50,.20,'#273a54');block(x+.16,.05,z,.17,.5,.2,'#283c59');
+ block(x,.55,z,.65,.55,.37,suit);block(x,.97,z-.06,.36,.08,.39,'#d7ece9');
+ block(x,.94+s,z+.10,.17,.31,.16,'#ddb9a0');block(x-.4,.89-s,z+.04,.15,.34,.15,'#ddb9a0');
+ block(x,1.13+(status==='idle'?Math.sin(ms*.003)*.035:0),z,.46,.45,.42,'#e5bba1');
+ block(x,1.51,z-.035,.48,.13,.43,'#283b4d');
+ block(x-.11,1.34,z+.23,.055,.047,.025,'#30404d');block(x+.11,1.34,z+.23,.055,.047,.025,'#30404d');
+ let pos=project(x,1.75,z),pground=project(x,0,z);actors.push({x:pos.x,y:pos.y,groundY:pground.y,index});}
+function badge(x,y,text,border,selected=false){ctx.font='600 10px system-ui';let w=Math.min(215,ctx.measureText(text).width+19),hh=24;ctx.fillStyle=selected?'#155c65ee':'#0b2639dc';ctx.strokeStyle=border;ctx.lineWidth=selected?1.8:1;ctx.beginPath();ctx.roundRect(x-w/2,y-hh/2,w,hh,7);ctx.fill();ctx.stroke();ctx.fillStyle='#edfbfa';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,x,y,200)}
+function draw(ts){tick=ts;objects.length=0;actors.length=0;ctx.clearRect(0,0,cw,ch);
+ // distant floor grid and decorative room foundation
+ block(0,-.23,0,13.3,.27,8.7,'#25445a');
+ for(let x=-6;x<=6;x+=2)for(let z=-3.75;z<=4;z+=1.5){decal(x,.003,z,1.93,1.43,((x+z)%3===0)?'#355264':'#2d495a')}
+ // low back-wall edge and structural accents
+ block(0,.03,-4.2,13.3,.34,.16,'#5c8290');block(-6.45,.03,0,.16,.3,8.6,'#53788a');
+ // rug and entry walkway
+ decal(0,.035,0,12.0,6.8,'#375267');decal(0,.041,0,11.6,6.5,'#2d495c');
+ // office objects
+ for(let r of roles)desk(r);
+ block(-5.68,.08,-3.47,.60,1.82,.75,'#4f6574');for(let i=0;i<5;i++)block(-5.65,.36+i*.25,-3.04,.48,.21,.17,['#c69d69','#83b0bd','#c47e70','#90a68c','#9283a9'][i]);
+ block(5.7,.04,-3.38,.77,1.25,.87,'#627487');block(5.69,1.20,-3.05,.55,.06,.42,'#cfd7d4');block(5.71,.76,-2.89,.28,.20,.08,'#272f3b');
+ plant(-5.72,3.35,1.08);plant(5.64,3.34,.88);
+ block(0,.02,-3.66,2.9,.14,.48,'#335665');block(0,.45,-3.72,2.5,.84,.15,'#6e9b95');block(0,.56,-3.62,2.25,.51,.045,'#173d4a');
+ block(0,.02,3.9,2.3,.09,.48,'#436c77');
+ for(let i=0;i<4;i++)avatar(roles[i],i,ts);
+ objects.sort((a,b)=>a.depth-b.depth);
+ for(let ob of objects){let verts=ob.vertices;if(verts.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)))continue;ctx.globalAlpha=ob.alpha;ctx.fillStyle=ob.color;ctx.beginPath();ctx.moveTo(verts[0].x,verts[0].y);for(let j=1;j<verts.length;j++)ctx.lineTo(verts[j].x,verts[j].y);ctx.closePath();ctx.fill();}ctx.globalAlpha=1;
+ for(let p of actors){let r=roles[p.index];let label=(p.index+1).toString().padStart(2,'0')+' · '+r.short;let y=p.y-14;badge(p.x,y,label,r.color,state.selected===p.index)}
+ requestAnimationFrame(draw)
+}
+requestAnimationFrame(draw);
+canvas.addEventListener('pointerdown',e=>{lastMouse={x:e.clientX,y:e.clientY};dragging=true;moved=false;canvas.classList.add('drag');canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!dragging||!lastMouse)return;let dx=e.clientX-lastMouse.x,dy=e.clientY-lastMouse.y;if(Math.abs(dx)+Math.abs(dy)>2)moved=true;camera.yaw=Math.max(-1.28,Math.min(.55,camera.yaw+dx*.007));camera.pitch=Math.max(.37,Math.min(1.25,camera.pitch+dy*.005));lastMouse={x:e.clientX,y:e.clientY}});
+canvas.addEventListener('pointerup',e=>{canvas.classList.remove('drag');dragging=false;if(!moved){let rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let hits=actors.map(a=>({i:a.index,dist:Math.hypot(a.x-x,a.y-26-y)})).sort((a,b)=>a.dist-b.dist);if(hits[0]&&hits[0].dist<65){state.selected=hits[0].i;render()}}});
+canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('drag')});
+canvas.addEventListener('wheel',e=>{e.preventDefault();camera.zoom=Math.max(.58,Math.min(1.65,camera.zoom*(e.deltaY>0?.92:1.08)))},{passive:false});
+$('zoomIn').onclick=()=>camera.zoom=Math.min(1.65,camera.zoom*1.1);$('zoomOut').onclick=()=>camera.zoom=Math.max(.58,camera.zoom*.91);
+$('rotateL').onclick=()=>camera.yaw=Math.max(-1.28,camera.yaw-.14);$('rotateR').onclick=()=>camera.yaw=Math.min(.55,camera.yaw+.14);
+$('resetCamera').onclick=()=>{camera.yaw=-.58;camera.pitch=.76;camera.zoom=1};
+</script>
+</body>
+</html>
