@@ -1,0 +1,44 @@
+name: APSS 公開來源蒐集與頁面發布（試行）
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 每日 08:30 臺灣時間（UTC 00:30）；GitHub 排程可能延遲或漏跑
+    - cron: '30 0 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'scripts/collect_sources.py'
+      - '.github/workflows/apss-collector.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: apss-public-collection-pages
+  cancel-in-progress: false
+
+jobs:
+  collect-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Collect PUBLIC RSS headline leads — not an official MR
+        run: python3 scripts/collect_sources.py
+      - name: Upload static site with recorded collection results
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - name: Publish GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

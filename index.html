@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="color-scheme" content="dark"/>
-<title>APSS Virtual Research Studio｜獨立展示原型 v0.1.2</title>
+<title>APSS Virtual Research Studio｜獨立展示原型 v0.2</title>
 <style>
 :root{--bg:#08121f;--panel:#101d2d;--panel2:#142338;--bd:#2a3d53;--txt:#edf4fa;--muted:#90a5b9;--mint:#58dbc6;--gold:#e6ba6c;--warn:#ffbc85;--red:#fa9496}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Microsoft JhengHei","Noto Sans TC",sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:var(--txt)}button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
@@ -19,30 +19,34 @@ body{min-height:100vh;background:radial-gradient(ellipse at 42% -20%,#183b50 0,t
 .control-body{padding:15px}.control-body label{font-size:11px;color:#9eb9c9;display:block;margin:0 0 7px}select,input[type=text]{width:100%;min-height:39px;border:1px solid #3a5266;background:#091b2c;color:#f0f6fa;border-radius:8px;padding:8px 10px;outline:0}.action-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.action-grid button{border:1px solid #34536c;border-radius:8px;background:#193349;padding:9px 6px;font-size:11px}.action-grid button:hover{border-color:#5cd3c2}.action-grid button.selected{background:#23645f;border-color:#71d2c3}.tasks{max-height:230px;overflow:auto}.task{display:flex;gap:8px;padding:9px 0;font-size:11px;line-height:1.5;border-bottom:1px solid #2b4152}.task:last-child{border-bottom:0}.task input{accent-color:#65d0c4;margin-top:3px}.task.done span{text-decoration:line-through;color:#667b90}.add-task{display:flex;gap:6px;margin-top:9px}.add-task .btn{white-space:nowrap}.footer{padding:18px 2px 0;display:flex;justify-content:space-between;gap:20px;color:#6f879e;font-size:11px}.footer b{color:#91b8bf}.sr-only{position:absolute;left:-9999px}
 @media(max-width:1310px){.layout{grid-template-columns:230px minmax(0,1fr)}.right{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr}.right>.panel{min-width:0}.scene-panel{min-height:520px}#scene{height:520px}.subtiles{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:740px){.shell{padding:12px}.top{align-items:flex-start;flex-direction:column}.brand h1{font-size:16px}.brand p{font-size:11px}.layout{display:block}.layout>.panel,.main,.right{margin-bottom:12px}.left{display:grid;grid-template-columns:1fr}.right{display:block}#scene{height:430px}.scene-panel{min-height:430px}.scene-head h2{font-size:13px}.scene-head .flags{display:none}.scene-help span{display:none}.subtiles{grid-template-columns:1fr}.footer{flex-direction:column;gap:4px}.stat{grid-template-columns:1fr 1fr}}
+
+.collected-panel{margin-top:16px}.source-action{font-size:11px;color:#80e8d4;text-decoration:none}.source-action:hover{text-decoration:underline}
+.collect-group{padding:13px 0;border-top:1px solid #2a3d53}.collect-group h3{font-size:12px;margin:0 0 10px}.source-row{padding:8px 0;border-bottom:1px dashed #254356;display:flex;flex-direction:column;gap:3px}.source-row a{font-size:12px;color:#b7f0e7;text-decoration:none;line-height:1.45}.source-row a:hover{text-decoration:underline}.source-row span{color:#91a7b8;font-size:10px;line-height:1.5}
 </style>
 </head>
 <body>
 <div class="shell">
 <header class="top">
-<div class="brand"><div class="emblem">APSS</div><div><small>VIRTUAL RESEARCH STUDIO · V0.1.2</small><h1>亞太安全與戰略研究獨立工作室</h1><p>獨立開發原型｜Windows 11 本機版｜不連接外部資料</p></div></div>
-<div class="actions"><span class="tag">DEMO · 所有動態均為模擬</span><button class="btn flat" id="resetBtn">重設示範</button><button class="btn primary" id="exportBtn">匯出本機資料</button></div>
+<div class="brand"><div class="emblem">APSS</div><div><small>VIRTUAL RESEARCH STUDIO · V0.2</small><h1>亞太安全與戰略研究獨立工作室</h1><p>公開來源蒐集試行版｜GitHub Pages｜AI 研究分析尚未介接</p></div></div>
+<div class="actions"><span class="tag">人物動畫為模擬 · 新聞來源為獨立蒐集</span><button class="btn flat" id="resetBtn">重設示範</button><button class="btn primary" id="exportBtn">匯出本機資料</button></div>
 </header>
 <div class="layout">
 <aside class="left panel">
- <div class="section"><div class="section-head"><h2>研究管理總覽</h2><span class="number">2026</span></div><div class="stat"><div class="metric"><strong>04</strong><small>MR 研究項目</small></div><div class="metric"><strong class="warn">00</strong><small>已介接真實資料源</small></div></div><p class="notice">此版本只有互動畫面及本機任務紀錄。未接入 ChatGPT MR 排程、執行日誌、電子郵件或自動化系統。</p></div>
+ <div class="section"><div class="section-head"><h2>研究管理總覽</h2><span class="number">2026</span></div><div class="stat"><div class="metric"><strong>04</strong><small>MR 研究項目</small></div><div class="metric"><strong class="warn"><span id="realSourceCount">00</span></strong><small>本次成功讀取來源</small></div></div><p class="notice">本版可顯示 GitHub Actions 真正蒐集的公開新聞線索；但未接入 ChatGPT MR 排程、AI 分析、查證或通知系統。</p></div>
  <div class="section"><div class="section-head"><h2>虛擬研究員</h2><span class="dim">點選切換席位</span></div><div id="agentList"></div></div>
- <div class="section"><div class="section-head"><h2>本機待辦事項</h2><span class="number" id="taskCount">0 / 0</span></div><div class="tasks" id="tasks"></div><div class="add-task"><input type="text" id="taskInput" placeholder="新增本機待辦…" maxlength="60" aria-label="新增待辦事項"/><button class="btn sm primary" id="addTask">新增</button></div><p class="dim" style="line-height:1.5">任務存於這台瀏覽器；不會下達研究指令給 AI。</p></div>
+ <div class="section"><div class="section-head"><h2>本機待辦事項</h2><span class="number" id="taskCount">0 / 0</span></div><div class="tasks" id="tasks"></div><div class="add-task"><input type="text" id="taskInput" placeholder="新增本機待辦…" maxlength="60" aria-label="新增待辦事項"/><button class="btn sm primary" id="addTask">新增</button></div><p class="dim" style="line-height:1.5">任務存於這台瀏覽器；不會下達研究指令給 AI；公開新聞由 GitHub Actions 在伺服端另行蒐集。</p></div>
 </aside>
 <main class="main">
- <section class="panel scene-panel"><div class="scene-head"><div><h2>APSS RESEARCH OPERATIONS</h2><span>INDEPENDENT VIRTUAL OFFICE · ISOMETRIC VIEW</span></div><div class="flags"><span class="flag">4 WORKSTATIONS</span><span class="flag">LOCAL ONLY</span></div></div><canvas id="scene" aria-label="可旋轉、縮放及點選研究員的 3D 虛擬研究室">您的瀏覽器不支援 Canvas。</canvas><div class="scene-help"><span>拖曳旋轉視角 · 滾輪縮放 · 點選研究員</span><div class="scene-controls"><button type="button" id="rotateL" aria-label="向左旋轉">↶</button><button type="button" id="rotateR" aria-label="向右旋轉">↷</button><button type="button" id="zoomIn" aria-label="放大">＋</button><button type="button" id="zoomOut" aria-label="縮小">－</button><button type="button" id="resetCamera">重置視角</button></div></div></section>
- <div class="subtiles"><div class="tile"><h3>研究檔案中心</h3><p><span class="k">SRA / PSA / IPR / OM</span> 等研究類別將逐步整合。此版尚未讀取實際文件。</p></div><div class="tile"><h3>驗證與證據</h3><p>未來顯示每個 MR 的<span class="k">最新實際執行</span>、來源證據、通知結果及錯誤紀錄。</p></div><div class="tile"><h3>權限與資料保護</h3><p>目前<span class="k">不需登入、不需 API 金鑰</span>，離線可用；資料只留在本機瀏覽器。</p></div></div>
+ <section class="panel scene-panel"><div class="scene-head"><div><h2>APSS RESEARCH OPERATIONS</h2><span>INDEPENDENT VIRTUAL OFFICE · ISOMETRIC VIEW</span></div><div class="flags"><span class="flag">4 WORKSTATIONS</span><span class="flag">LIVE SOURCE PROTOTYPE</span></div></div><canvas id="scene" aria-label="可旋轉、縮放及點選研究員的 3D 虛擬研究室">您的瀏覽器不支援 Canvas。</canvas><div class="scene-help"><span>拖曳旋轉視角 · 滾輪縮放 · 點選研究員</span><div class="scene-controls"><button type="button" id="rotateL" aria-label="向左旋轉">↶</button><button type="button" id="rotateR" aria-label="向右旋轉">↷</button><button type="button" id="zoomIn" aria-label="放大">＋</button><button type="button" id="zoomOut" aria-label="縮小">－</button><button type="button" id="resetCamera">重置視角</button></div></div></section>
+ <div class="subtiles"><div class="tile"><h3>真實蒐集執行紀錄</h3><p id="collectorMeta">正在讀取公開來源蒐集紀錄……</p></div><div class="tile"><h3>研究判斷與查證</h3><p><span class="k">本版只蒐集來源線索</span>，不進行事實查證、交叉核實、A/B/C 態勢分級或戰略分析；更不代表正式 MR 已完成。</p></div><div class="tile"><h3>資訊安全與來源</h3><p>公開網頁只顯示公開新聞標題、來源及連結。<span class="k">請勿放入機密、私人研究資料或 API 金鑰。</span></p></div></div>
+ <section class="panel collected-panel" aria-live="polite"><div class="section"><div class="section-head"><h2>公開來源蒐集結果 · 待人工核實</h2><a class="source-action" href="https://github.com/APSS-netizen/apss-virtual-research-studio/actions/workflows/apss-collector.yml" target="_blank" rel="noopener noreferrer">前往 GitHub 執行蒐集 ↗</a></div><p class="dim" style="line-height:1.7">這是獨立資料蒐集試行，不是既有 ChatGPT 四項 MR 自動化。點選每則標題可開啟新聞原始連結；標題本身未經 APSS 核實。</p><div id="collectedResults"><div class="dim">尚未取得真實資料。完成 GitHub Actions 第一次執行後會顯示。</div></div></div></section>
 </main>
 <aside class="right">
- <section class="panel"><div class="section"><div class="section-head"><h2>四項 MR 長期監測</h2><span class="dim">資料源狀態</span></div><div id="mrList"></div></div></section>
+ <section class="panel"><div class="section"><div class="section-head"><h2>四項 MR 來源蒐集</h2><span class="dim">非正式 MR 執行狀態</span></div><div id="mrList"></div></div></section>
  <section class="panel" style="margin-top:14px"><div class="section"><div class="section-head"><h2>模擬席位控制</h2><span class="dim">不執行實際任務</span></div><div class="control-body" style="padding:0"><label for="personSelect">選擇虛擬研究員</label><select id="personSelect"></select><label style="margin-top:15px">示範動畫狀態</label><div class="action-grid" id="statusActions"><button type="button" data-status="work">模擬工作中</button><button type="button" data-status="idle">模擬待命</button><button type="button" data-status="review">模擬待核對</button><button type="button" data-status="done">模擬完成</button></div><div id="selectedDetail" style="margin-top:14px;color:#a1b8c8;font-size:11px;line-height:1.7"></div></div></div></section>
  </aside>
 </div>
-<footer class="footer"><span>APSS Virtual Research Studio v0.1.1 · 獨立原創示範介面 · 無外部程式庫</span><span><b>重要：</b>畫面狀態不是 MR 實際運作或通知正常的證據。</span></footer>
+<footer class="footer"><span>APSS Virtual Research Studio v0.2 · 公開來源蒐集試行版 · 無外部程式庫</span><span><b>重要：</b>畫面狀態不是 MR 實際運作或通知正常的證據。</span></footer>
 </div>
 <script>
 'use strict';
@@ -53,6 +57,7 @@ const roles=[
  {name:'跨區域衝突研究席',short:'跨區域武裝衝突',color:'#ed988d',icon:'🛡',full:'跨區域武裝衝突連動觀察',x:-2.75,z:1.65},
  {name:'人工智慧研究席',short:'人工智慧與治理',color:'#9ba8e3',icon:'◈',full:'人工智慧發展、跨域應用、治理與戰略影響觀察',x:2.75,z:1.65}
 ];
+let liveCollection=null;
 const statuses={work:['模擬工作中','work'],idle:['模擬待命','idle'],review:['模擬待核對','review'],done:['模擬完成','done']};
 function getSaved(){try{return JSON.parse(localStorage.getItem('apss_studio_v01')||'null')}catch{return null}}
 const saved=getSaved();
@@ -64,8 +69,8 @@ function render(){
  $('agentList').innerHTML=roles.map((r,i)=>`<div role="button" tabindex="0" data-agent="${i}" class="agent ${state.selected===i?'active':''}"><div class="avatar">${r.icon}</div><div class="agent-info"><strong>${escapeHTML(r.name)}</strong><small>${statuses[state.staff[i]][0]}</small></div><i class="statusdot ${statuses[state.staff[i]][1]}"></i></div>`).join('');
  $('personSelect').innerHTML=roles.map((r,i)=>`<option value="${i}">${escapeHTML(r.name)}</option>`).join('');$('personSelect').value=String(state.selected);
  $('statusActions').querySelectorAll('button').forEach(b=>b.classList.toggle('selected',b.dataset.status===state.staff[state.selected]));
- $('selectedDetail').innerHTML=`<strong style="color:#e8f6fb">${escapeHTML(roles[state.selected].full)}</strong><div style="margin-top:7px">真實執行：未介接<br>最後執行：無資料<br>通知及電子郵件：未介接<br>圖上動畫：${statuses[state.staff[state.selected]][0]}</div>`;
- $('mrList').innerHTML=roles.map((r,i)=>`<div class="mr"><div class="mr-title"><span class="num">MR ${String(i+1).padStart(2,'0')}</span><strong>${escapeHTML(r.full)}</strong></div><small>執行紀錄：未介接 · 通知紀錄：未介接</small><div class="source"><i></i>真實資料源未連接</div></div>`).join('');
+ $('selectedDetail').innerHTML=`<strong style="color:#e8f6fb">${escapeHTML(roles[state.selected].full)}</strong><div style="margin-top:7px">正式 MR：未介接<br>AI 研究／查證：未介接<br>通知及電子郵件：未介接<br>圖上動畫：${statuses[state.staff[state.selected]][0]}</div>`;
+ $('mrList').innerHTML=roles.map((r,i)=>{const c=liveCollection?.channels?.[i];const n=c?.items?.length||0;const label=c?(c.status==='collected'?'已蒐集公開來源':c.status==='partial'?'部分來源可用':c.status==='empty'?'本次無符合線索':'來源取得失敗'):'尚無執行紀錄';return `<div class="mr"><div class="mr-title"><span class="num">MR ${String(i+1).padStart(2,'0')}</span><strong>${escapeHTML(r.full)}</strong></div><small>資料蒐集：${escapeHTML(label)} · 線索：${n} 則</small><div class="source"><i></i>正式 MR 與通知：未介接</div></div>`}).join('');
  $('taskCount').textContent=`${state.tasks.filter(x=>x.done).length} / ${state.tasks.length}`;
  $('tasks').innerHTML=state.tasks.length?state.tasks.map((t,i)=>`<label class="task ${t.done?'done':''}"><input type="checkbox" data-task="${i}" ${t.done?'checked':''}/><span>${escapeHTML(t.text)}</span></label>`).join(''):'<div class="dim">尚無本機任務。</div>';
 }
@@ -79,6 +84,41 @@ $('addTask').addEventListener('click',addTask);$('taskInput').addEventListener('
 $('resetBtn').addEventListener('click',()=>{if(!confirm('要重設所有本機示範狀態及待辦清單嗎？'))return;state.staff=['work','work','work','work'];state.tasks=structuredClone(initialTasks);save();render()});
 $('exportBtn').addEventListener('click',()=>{let obj={schema:'apss-studio-demo-v0.1',exportedAt:new Date().toISOString(),source:'browser-local',realMRConnected:false,staff:roles.map((r,i)=>({mr:r.full,visualSimulationStatus:state.staff[i]})),tasks:state.tasks};let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='APSS-Virtual-Studio-Local-Demo.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});
 render();
+
+// 真實來源蒐集：資料由 GitHub Actions 執行後，以靜態 JSON 發布。與四項正式 MR 排程互不相通。
+function validHttpURL(value){try{const u=new URL(value);return u.protocol==='https:'||u.protocol==='http:'}catch{return false}}
+function isoTime(value){if(!value)return '無';const t=new Date(value);return Number.isNaN(t.getTime())?'無':t.toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false})+'（臺灣時間）'}
+function showCollection(){
+ const meta=$('collectorMeta');const target=$('collectedResults');if(!meta||!target)return;
+ if(!liveCollection){meta.textContent='尚無可核實的資料蒐集紀錄；請至 GitHub Actions 執行來源蒐集。';target.innerHTML='<div class="dim">未取得執行結果。可在 GitHub 網站 Actions 手動執行；本機 file:/// 無法直接讀取此資料。</div>';return}
+ const ls=liveCollection.channels||[];const good=ls.reduce((n,c)=>n+(c.sourcesOk||0),0);
+ $('realSourceCount').textContent=String(good).padStart(2,'0');
+ meta.textContent='最後蒐集：'+isoTime(liveCollection.attemptedAt)+'；來源成功 '+good+' / '+ls.reduce((n,c)=>n+(c.sourcesTotal||0),0)+'。此紀錄僅證明公開資料擷取，不代表 MR 或通知系統正常。';
+ target.replaceChildren();
+ for(let i=0;i<4;i++){
+   const channel=ls[i];const card=document.createElement('div');card.className='collect-group';
+   const header=document.createElement('h3');header.textContent=roles[i].full+'｜'+(channel?(channel.items?.length||0)+' 則待核實線索':'無資料');card.append(header);
+   if(channel?.errors?.length){const err=document.createElement('div');err.className='dim';err.textContent='來源異常：'+channel.errors.map(e=>e.source).join('、');card.append(err)}
+   if(!channel?.items?.length){const el=document.createElement('p');el.className='dim';el.textContent='這次沒有取得符合條件的標題，並不代表沒有新事件。';card.append(el)}
+   for(const item of (channel?.items||[]).slice(0,10)){
+     if(!validHttpURL(item.url))continue;
+     const row=document.createElement('div');row.className='source-row';
+     const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=item.title||'未命名新聞';row.append(a);
+     const m=document.createElement('span');m.textContent=(item.source||'未標示來源')+' · '+(item.published?isoTime(item.published):'無發稿時間');row.append(m);card.append(row);
+   }
+   target.append(card)
+ }
+}
+async function loadCollection(){
+ try{
+   const response=await fetch('./data/live.json?v='+Date.now(),{cache:'no-store'});
+   if(!response.ok)throw Error('HTTP '+response.status);
+   const result=await response.json();if(!Array.isArray(result.channels)||result.channels.length!==4)throw Error('invalid data');
+   liveCollection=result;
+ }catch(err){console.info('APSS 公開來源蒐集資料尚不可用：',err.message)}
+ showCollection();render();
+}
+loadCollection();
 
 // Independent, dependency-free 3D orthographic scene renderer.
 // Geometry is modeled in world-space x/y/z and projected on a 2D canvas.
