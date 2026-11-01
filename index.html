@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="color-scheme" content="dark"/>
-<title>APSS Virtual Research Studio｜獨立展示原型 v0.2</title>
+<title>APSS Virtual Research Studio｜公開來源看板 v0.4</title>
 <style>
 :root{--bg:#08121f;--panel:#101d2d;--panel2:#142338;--bd:#2a3d53;--txt:#edf4fa;--muted:#90a5b9;--mint:#58dbc6;--gold:#e6ba6c;--warn:#ffbc85;--red:#fa9496}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Microsoft JhengHei","Noto Sans TC",sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:var(--txt)}button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
@@ -22,13 +22,24 @@ body{min-height:100vh;background:radial-gradient(ellipse at 42% -20%,#183b50 0,t
 
 .collected-panel{margin-top:16px}.source-action{font-size:11px;color:#80e8d4;text-decoration:none}.source-action:hover{text-decoration:underline}
 .collect-group{padding:13px 0;border-top:1px solid #2a3d53}.collect-group h3{font-size:12px;margin:0 0 10px}.source-row{padding:8px 0;border-bottom:1px dashed #254356;display:flex;flex-direction:column;gap:3px}.source-row a{font-size:12px;color:#b7f0e7;text-decoration:none;line-height:1.45}.source-row a:hover{text-decoration:underline}.source-row span{color:#91a7b8;font-size:10px;line-height:1.5}
+
+/* v0.3: genuine separate demo-animation controls; never imply real MR status */
+.play-panel{margin-top:16px;padding:12px;border:1px solid #365364;border-radius:11px;background:linear-gradient(130deg,#173848,#172a3e)}
+.play-title{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:750;margin-bottom:11px}.play-title span:last-child{font-size:10px;font-weight:500;color:#a4d9cb}
+.demo-switch{display:flex!important;gap:9px;align-items:flex-start;line-height:1.6;color:#d8ede9!important}.demo-switch input{accent-color:#4ccbb8;margin-top:3px;flex-shrink:0}
+#activityActions button{background:#193b4a}#activityActions button:hover{background:#285668}#activityActions button.active{border-color:#e9ba6b;background:#42503b}
+#scene:focus{outline:2px solid #65d6c6}.mini-note{font-size:10px;color:#a8bfc9}
+
+/* v0.4 independent public-source station cards; NO real AI classification */
+.station-panel{margin-top:16px}.station-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.station-card{appearance:none;border:1px solid #35566a;border-radius:12px;padding:13px;background:#112c3e;color:#eaf7fb;text-align:left;display:flex;flex-direction:column;gap:7px;min-width:0}.station-card:hover,.station-card.selected{border-color:#62d6c1;background:#173b4c}.station-card:focus-visible{outline:2px solid #6be7d2;outline-offset:2px}.station-card .station-title{font-size:12px;font-weight:750;line-height:1.6}.station-card .station-stats{display:flex;justify-content:space-between;gap:7px;color:#b5ccda;font-size:11px;flex-wrap:wrap}.station-card .station-tier{font-size:11px;color:#e7c890;border-top:1px solid #2a5360;padding-top:7px}.station-card .station-time{font-size:10px;color:#8fabbc;line-height:1.5}.board-toolbar{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;margin-top:11px}.board-toolbar button{border:1px solid #366174;background:#173348;color:#c4e9e1;border-radius:7px;padding:6px 9px;font-size:11px}.source-row .tag-pending{color:#e7c890;font-size:10px}.health-alert{color:#f2ba87!important}.meta-row{font-size:11px;color:#8ca9b9;line-height:1.6}
+@media(max-width:740px){.station-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="shell">
 <header class="top">
-<div class="brand"><div class="emblem">APSS</div><div><small>VIRTUAL RESEARCH STUDIO · V0.2</small><h1>亞太安全與戰略研究獨立工作室</h1><p>公開來源蒐集試行版｜GitHub Pages｜AI 研究分析尚未介接</p></div></div>
-<div class="actions"><span class="tag">人物動畫為模擬 · 新聞來源為獨立蒐集</span><button class="btn flat" id="resetBtn">重設示範</button><button class="btn primary" id="exportBtn">匯出本機資料</button></div>
+<div class="brand"><div class="emblem">APSS</div><div><small>VIRTUAL RESEARCH STUDIO · V0.4</small><h1>亞太安全與戰略研究獨立工作室</h1><p>公開來源蒐集 + 情境動畫｜GitHub Pages｜AI 研究分析尚未介接</p></div></div>
+<div class="actions"><span class="tag">🐈 橘貓＋🐕 邊境牧羊犬為情境動畫 · RSS 蒐集是真實執行</span><button class="btn flat" id="resetBtn">重設示範</button><button class="btn primary" id="exportBtn">匯出本機資料</button></div>
 </header>
 <div class="layout">
 <aside class="left panel">
@@ -37,16 +48,17 @@ body{min-height:100vh;background:radial-gradient(ellipse at 42% -20%,#183b50 0,t
  <div class="section"><div class="section-head"><h2>本機待辦事項</h2><span class="number" id="taskCount">0 / 0</span></div><div class="tasks" id="tasks"></div><div class="add-task"><input type="text" id="taskInput" placeholder="新增本機待辦…" maxlength="60" aria-label="新增待辦事項"/><button class="btn sm primary" id="addTask">新增</button></div><p class="dim" style="line-height:1.5">任務存於這台瀏覽器；不會下達研究指令給 AI；公開新聞由 GitHub Actions 在伺服端另行蒐集。</p></div>
 </aside>
 <main class="main">
- <section class="panel scene-panel"><div class="scene-head"><div><h2>APSS RESEARCH OPERATIONS</h2><span>INDEPENDENT VIRTUAL OFFICE · ISOMETRIC VIEW</span></div><div class="flags"><span class="flag">4 WORKSTATIONS</span><span class="flag">LIVE SOURCE PROTOTYPE</span></div></div><canvas id="scene" aria-label="可旋轉、縮放及點選研究員的 3D 虛擬研究室">您的瀏覽器不支援 Canvas。</canvas><div class="scene-help"><span>拖曳旋轉視角 · 滾輪縮放 · 點選研究員</span><div class="scene-controls"><button type="button" id="rotateL" aria-label="向左旋轉">↶</button><button type="button" id="rotateR" aria-label="向右旋轉">↷</button><button type="button" id="zoomIn" aria-label="放大">＋</button><button type="button" id="zoomOut" aria-label="縮小">－</button><button type="button" id="resetCamera">重置視角</button></div></div></section>
- <div class="subtiles"><div class="tile"><h3>真實蒐集執行紀錄</h3><p id="collectorMeta">正在讀取公開來源蒐集紀錄……</p></div><div class="tile"><h3>研究判斷與查證</h3><p><span class="k">本版只蒐集來源線索</span>，不進行事實查證、交叉核實、A/B/C 態勢分級或戰略分析；更不代表正式 MR 已完成。</p></div><div class="tile"><h3>資訊安全與來源</h3><p>公開網頁只顯示公開新聞標題、來源及連結。<span class="k">請勿放入機密、私人研究資料或 API 金鑰。</span></p></div></div>
+ <section class="panel scene-panel"><div class="scene-head"><div><h2>APSS RESEARCH OPERATIONS</h2><span>INDEPENDENT VIRTUAL OFFICE · ISOMETRIC VIEW</span></div><div class="flags"><span class="flag">4 WORKSTATIONS</span><span class="flag">CAT + BORDER COLLIE</span></div></div><canvas id="scene" aria-label="可旋轉、縮放及點選研究員的 3D 虛擬研究室">您的瀏覽器不支援 Canvas。</canvas><div class="scene-help"><span>拖曳旋轉視角 · 滾輪縮放 · 點選研究員 · 貓狗活動情境</span><div class="scene-controls"><button type="button" id="rotateL" aria-label="向左旋轉">↶</button><button type="button" id="rotateR" aria-label="向右旋轉">↷</button><button type="button" id="zoomIn" aria-label="放大">＋</button><button type="button" id="zoomOut" aria-label="縮小">－</button><button type="button" id="resetCamera">重置視角</button></div></div></section>
+ <div class="subtiles"><div class="tile"><h3>真實蒐集執行紀錄</h3><p id="collectorMeta">正在讀取公開來源蒐集紀錄……</p></div><div class="tile"><h3>事件等級與查證</h3><p><span class="k">A／B／C：尚未判定</span>。所有來源線索維持「待判／未證實／待人工核實」，不冒充 AI 判斷、人工審查或正式 MR。</p></div><div class="tile"><h3>資訊安全與來源</h3><p>公開網頁只顯示公開新聞標題、來源及連結。<span class="k">請勿放入機密、私人研究資料或 API 金鑰。</span></p></div></div>
+ <section class="panel station-panel" id="stationBoard" aria-label="四席位公開來源資料板"><div class="section"><div class="section-head"><h2>四項 MR 研究席位｜公開來源與候選線索</h2><span class="dim">選擇席位可篩選下方線索</span></div><div id="stationCards" class="station-grid"><p class="dim">尚未取得來源蒐集紀錄。</p></div><p class="dim" style="line-height:1.6;margin-top:12px">分級：A / B / C / 待判；證據：未證實；審核：待人工核實。此版尚無可核實的自動事件級別、模型輸出、人工批准或通知紀錄。</p></div></section>
  <section class="panel collected-panel" aria-live="polite"><div class="section"><div class="section-head"><h2>公開來源蒐集結果 · 待人工核實</h2><a class="source-action" href="https://github.com/APSS-netizen/apss-virtual-research-studio/actions/workflows/apss-collector.yml" target="_blank" rel="noopener noreferrer">前往 GitHub 執行蒐集 ↗</a></div><p class="dim" style="line-height:1.7">這是獨立資料蒐集試行，不是既有 ChatGPT 四項 MR 自動化。點選每則標題可開啟新聞原始連結；標題本身未經 APSS 核實。</p><div id="collectedResults"><div class="dim">尚未取得真實資料。完成 GitHub Actions 第一次執行後會顯示。</div></div></div></section>
 </main>
 <aside class="right">
  <section class="panel"><div class="section"><div class="section-head"><h2>四項 MR 來源蒐集</h2><span class="dim">非正式 MR 執行狀態</span></div><div id="mrList"></div></div></section>
- <section class="panel" style="margin-top:14px"><div class="section"><div class="section-head"><h2>模擬席位控制</h2><span class="dim">不執行實際任務</span></div><div class="control-body" style="padding:0"><label for="personSelect">選擇虛擬研究員</label><select id="personSelect"></select><label style="margin-top:15px">示範動畫狀態</label><div class="action-grid" id="statusActions"><button type="button" data-status="work">模擬工作中</button><button type="button" data-status="idle">模擬待命</button><button type="button" data-status="review">模擬待核對</button><button type="button" data-status="done">模擬完成</button></div><div id="selectedDetail" style="margin-top:14px;color:#a1b8c8;font-size:11px;line-height:1.7"></div></div></div></section>
+ <section class="panel" style="margin-top:14px"><div class="section"><div class="section-head"><h2>模擬席位控制</h2><span class="dim">不執行實際任務</span></div><div class="control-body" style="padding:0"><label for="personSelect">選擇虛擬研究員</label><select id="personSelect"></select><label style="margin-top:15px">示範動畫狀態</label><div class="action-grid" id="statusActions"><button type="button" data-status="work">模擬工作中</button><button type="button" data-status="idle">模擬待命</button><button type="button" data-status="review">模擬待核對</button><button type="button" data-status="done">模擬完成</button></div><div class="play-panel"><div class="play-title"><span>🐈🐕 貓狗與員工情境</span><span id="autoBadge">自動輪播</span></div><label class="demo-switch"><input type="checkbox" id="autoScene" checked/> 自動播放研究員、橘貓和邊境牧羊犬活動</label><div class="action-grid" id="activityActions"><button type="button" data-activity="coffee">☕ 喝咖啡</button><button type="button" data-activity="pet">🐈 摸橘貓</button><button type="button" data-activity="stretch">🙆 伸懶腰</button><button type="button" data-activity="nap">💤 打瞌睡</button><button type="button" data-activity="work">💻 回座位</button><button type="button" id="resumeAuto">▶ 恢復輪播</button></div><label class="demo-switch" style="margin-top:11px"><input type="checkbox" id="reduceMotion"/> 降低動態（降低動畫更新頻率）</label><p class="dim" style="line-height:1.6">研究員與貓狗活動都是情境動畫，不會改變 GitHub Actions 的資料蒐集。</p></div><div id="selectedDetail" style="margin-top:14px;color:#a1b8c8;font-size:11px;line-height:1.7"></div></div></div></section>
  </aside>
 </div>
-<footer class="footer"><span>APSS Virtual Research Studio v0.2 · 公開來源蒐集試行版 · 無外部程式庫</span><span><b>重要：</b>畫面狀態不是 MR 實際運作或通知正常的證據。</span></footer>
+<footer class="footer"><span>APSS Virtual Research Studio v0.4 · 公開來源蒐集試行版 · 無外部程式庫</span><span><b>重要：</b>畫面狀態不是 MR 實際運作或通知正常的證據。</span></footer>
 </div>
 <script>
 'use strict';
@@ -58,21 +70,55 @@ const roles=[
  {name:'人工智慧研究席',short:'人工智慧與治理',color:'#9ba8e3',icon:'◈',full:'人工智慧發展、跨域應用、治理與戰略影響觀察',x:2.75,z:1.65}
 ];
 let liveCollection=null;
+let activeMR=null; // null means display all; visual filter only, never alters real collection.
 const statuses={work:['模擬工作中','work'],idle:['模擬待命','idle'],review:['模擬待核對','review'],done:['模擬完成','done']};
 function getSaved(){try{return JSON.parse(localStorage.getItem('apss_studio_v01')||'null')}catch{return null}}
 const saved=getSaved();
 const state={selected:0,staff:roles.map((_,i)=>saved?.staff?.[i]&&statuses[saved.staff[i]]?saved.staff[i]:'work'),tasks:Array.isArray(saved?.tasks)?saved.tasks.filter(t=>typeof t.text==='string'&&typeof t.done==='boolean').slice(0,40):initialTasks};
 function save(){try{localStorage.setItem('apss_studio_v01',JSON.stringify({staff:state.staff,tasks:state.tasks}))}catch(e){console.warn('Local save unavailable',e)}}
 const $=id=>document.getElementById(id);
-function escapeHTML(text){return text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
+function escapeHTML(text){return String(text??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
+// 與實際 RSS 蒐集獨立的視覺情境。手動選擇僅影響動畫。
+let autoScene=true;
+let reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const activityOverrides=[null,null,null,null];
+const activityLabels={work:'回座位',coffee:'喝咖啡',pet:'摸橘貓',stretch:'伸懶腰',nap:'打瞌睡'};
+const sceneStart=performance.now();
+function timelineActivity(i,ts){
+ if(!autoScene)return activityOverrides[i]||'work';
+ if(activityOverrides[i])return activityOverrides[i];
+ // 56-second looping narrative, staggered to keep an active office scene.
+ const t=((ts-sceneStart)/1000+i*13.7+8)%56;
+ if(t<10)return 'work';
+ if(t<15)return 'stretch';
+ if(t<28)return 'coffee';
+ if(t<33)return 'work';
+ if(t<44)return 'pet';
+ if(t<49)return 'nap';
+ return 'work';
+}
+function refreshSceneBadges(ts){
+ const acts=roles.map((r,i)=>timelineActivity(i,ts));
+ $('autoBadge').textContent=autoScene?'自動輪播':'手動示範';
+ $('activityActions').querySelectorAll('[data-activity]').forEach(b=>b.classList.toggle('active',activityOverrides[state.selected]===b.dataset.activity));
+ const agents=$('agentList').querySelectorAll('[data-agent]');
+ agents.forEach((el,i)=>{const small=el.querySelector('small');if(small)small.textContent='情境：'+activityLabels[acts[i]]+' · 非真實工作狀態'});
+}
+$('reduceMotion').checked=reduceMotion;
+$('reduceMotion').addEventListener('change',e=>{reduceMotion=e.target.checked});
+$('autoScene').addEventListener('change',e=>{autoScene=e.target.checked;activityOverrides.fill(null);refreshSceneBadges(performance.now())});
+$('activityActions').addEventListener('click',e=>{const b=e.target.closest('[data-activity]');if(!b)return;activityOverrides[state.selected]=b.dataset.activity;refreshSceneBadges(performance.now())});
+$('resumeAuto').addEventListener('click',()=>{autoScene=true;$('autoScene').checked=true;activityOverrides.fill(null);refreshSceneBadges(performance.now())});
 function render(){
  $('agentList').innerHTML=roles.map((r,i)=>`<div role="button" tabindex="0" data-agent="${i}" class="agent ${state.selected===i?'active':''}"><div class="avatar">${r.icon}</div><div class="agent-info"><strong>${escapeHTML(r.name)}</strong><small>${statuses[state.staff[i]][0]}</small></div><i class="statusdot ${statuses[state.staff[i]][1]}"></i></div>`).join('');
  $('personSelect').innerHTML=roles.map((r,i)=>`<option value="${i}">${escapeHTML(r.name)}</option>`).join('');$('personSelect').value=String(state.selected);
  $('statusActions').querySelectorAll('button').forEach(b=>b.classList.toggle('selected',b.dataset.status===state.staff[state.selected]));
- $('selectedDetail').innerHTML=`<strong style="color:#e8f6fb">${escapeHTML(roles[state.selected].full)}</strong><div style="margin-top:7px">正式 MR：未介接<br>AI 研究／查證：未介接<br>通知及電子郵件：未介接<br>圖上動畫：${statuses[state.staff[state.selected]][0]}</div>`;
- $('mrList').innerHTML=roles.map((r,i)=>{const c=liveCollection?.channels?.[i];const n=c?.items?.length||0;const label=c?(c.status==='collected'?'已蒐集公開來源':c.status==='partial'?'部分來源可用':c.status==='empty'?'本次無符合線索':'來源取得失敗'):'尚無執行紀錄';return `<div class="mr"><div class="mr-title"><span class="num">MR ${String(i+1).padStart(2,'0')}</span><strong>${escapeHTML(r.full)}</strong></div><small>資料蒐集：${escapeHTML(label)} · 線索：${n} 則</small><div class="source"><i></i>正式 MR 與通知：未介接</div></div>`}).join('');
+ $('selectedDetail').innerHTML=`<strong style="color:#e8f6fb">${escapeHTML(roles[state.selected].full)}</strong><div style="margin-top:7px">正式 MR：未介接<br>AI 研究／查證：未介接<br>通知及電子郵件：未介接<br>席位按鈕（僅示範）：${statuses[state.staff[state.selected]][0]}<br>貓狗、咖啡與休息：情境動畫（非真實任務）</div>`;
+ $('mrList').innerHTML=roles.map((r,i)=>{const c=safeChannels()[i];const n=Array.isArray(c?.items)?c.items.length:0;const label=c?(c.status==='collected'?'已蒐集公開來源':c.status==='partial'?'部分來源可用':c.status==='empty'?'本次無符合線索':'來源取得失敗'):'尚無執行紀錄';return `<div class="mr"><div class="mr-title"><span class="num">MR ${String(i+1).padStart(2,'0')}</span><strong>${escapeHTML(r.full)}</strong></div><small>資料蒐集：${escapeHTML(label)} · 線索：${n} 則 · A/B/C 待判</small><div class="source"><i></i>正式 MR 與通知：未介接</div></div>`}).join('');
+ drawStationCards();
  $('taskCount').textContent=`${state.tasks.filter(x=>x.done).length} / ${state.tasks.length}`;
  $('tasks').innerHTML=state.tasks.length?state.tasks.map((t,i)=>`<label class="task ${t.done?'done':''}"><input type="checkbox" data-task="${i}" ${t.done?'checked':''}/><span>${escapeHTML(t.text)}</span></label>`).join(''):'<div class="dim">尚無本機任務。</div>';
+ refreshSceneBadges(performance.now());
 }
 $('agentList').addEventListener('click',e=>{let p=e.target.closest('[data-agent]');if(p){state.selected=+p.dataset.agent;render()}});
 $('agentList').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){let p=e.target.closest('[data-agent]');if(p){e.preventDefault();state.selected=+p.dataset.agent;render()}}});
@@ -81,30 +127,43 @@ $('statusActions').addEventListener('click',e=>{let b=e.target.closest('[data-st
 $('tasks').addEventListener('change',e=>{let t=e.target.closest('[data-task]');if(t){state.tasks[+t.dataset.task].done=t.checked;save();render()}});
 function addTask(){let val=$('taskInput').value.trim();if(!val||state.tasks.length>=40)return;state.tasks.push({text:val,done:false});$('taskInput').value='';save();render()}
 $('addTask').addEventListener('click',addTask);$('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
-$('resetBtn').addEventListener('click',()=>{if(!confirm('要重設所有本機示範狀態及待辦清單嗎？'))return;state.staff=['work','work','work','work'];state.tasks=structuredClone(initialTasks);save();render()});
+$('resetBtn').addEventListener('click',()=>{if(!confirm('要重設所有本機示範狀態及待辦清單嗎？'))return;state.staff=['work','work','work','work'];state.tasks=structuredClone(initialTasks);autoScene=true;$('autoScene').checked=true;activityOverrides.fill(null);save();render()});
 $('exportBtn').addEventListener('click',()=>{let obj={schema:'apss-studio-demo-v0.1',exportedAt:new Date().toISOString(),source:'browser-local',realMRConnected:false,staff:roles.map((r,i)=>({mr:r.full,visualSimulationStatus:state.staff[i]})),tasks:state.tasks};let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='APSS-Virtual-Studio-Local-Demo.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});
 render();
 
 // 真實來源蒐集：資料由 GitHub Actions 執行後，以靜態 JSON 發布。與四項正式 MR 排程互不相通。
 function validHttpURL(value){try{const u=new URL(value);return u.protocol==='https:'||u.protocol==='http:'}catch{return false}}
 function isoTime(value){if(!value)return '無';const t=new Date(value);return Number.isNaN(t.getTime())?'無':t.toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false})+'（臺灣時間）'}
+function safeChannels(){return Array.isArray(liveCollection?.channels)?liveCollection.channels:[]}
+function drawStationCards(){
+ const container=$('stationCards');if(!container)return;
+ const channels=safeChannels();
+ container.innerHTML=roles.map((r,i)=>{
+   const ch=channels[i];const n=Array.isArray(ch?.items)?ch.items.length:0;
+   const ok=Number(ch?.sourcesOk)||0,total=Number(ch?.sourcesTotal)||0;
+   const failures=Math.max(0,total-ok);
+   return `<button class="station-card ${activeMR===i?'selected':''}" type="button" data-mr="${i}" aria-pressed="${activeMR===i}"><span class="station-title">MR-0${i+1} · ${escapeHTML(r.full)}</span><span class="station-stats"><span>來源 ${ok}/${total||'—'}</span><span>失敗 ${failures}</span><span>待核實 ${n}</span></span><span class="station-tier">A — · B — · C — · 待判 ${n}</span><span class="station-time">蒐集時間：${escapeHTML(isoTime(liveCollection?.attemptedAt))}<br>AI：未介接 · 證據：未證實 · 人工審查：未介接</span></button>`
+ }).join('');
+}
+$('stationCards').addEventListener('click',e=>{const b=e.target.closest('[data-mr]');if(!b)return;const i=Number(b.dataset.mr);activeMR=activeMR===i?null:i;state.selected=i;render();showCollection();$('collectedResults').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});});
 function showCollection(){
  const meta=$('collectorMeta');const target=$('collectedResults');if(!meta||!target)return;
- if(!liveCollection){meta.textContent='尚無可核實的資料蒐集紀錄；請至 GitHub Actions 執行來源蒐集。';target.innerHTML='<div class="dim">未取得執行結果。可在 GitHub 網站 Actions 手動執行；本機 file:/// 無法直接讀取此資料。</div>';return}
- const ls=liveCollection.channels||[];const good=ls.reduce((n,c)=>n+(c.sourcesOk||0),0);
+ if(!liveCollection){drawStationCards();meta.textContent='尚無可核實的資料蒐集紀錄；請至 GitHub Actions 執行來源蒐集。';target.innerHTML='<div class="dim">未取得執行結果。可在 GitHub 網站 Actions 手動執行；本機 file:/// 無法直接讀取此資料。</div>';return}
+ const ls=safeChannels();const good=ls.reduce((n,c)=>n+(Number(c.sourcesOk)||0),0);drawStationCards();
  $('realSourceCount').textContent=String(good).padStart(2,'0');
- meta.textContent='最後蒐集：'+isoTime(liveCollection.attemptedAt)+'；來源成功 '+good+' / '+ls.reduce((n,c)=>n+(c.sourcesTotal||0),0)+'。此紀錄僅證明公開資料擷取，不代表 MR 或通知系統正常。';
+ meta.textContent='最後蒐集：'+isoTime(liveCollection.attemptedAt)+'；成功來源 '+good+'/'+ls.reduce((n,c)=>n+(Number(c.sourcesTotal)||0),0)+'；失敗 '+ls.reduce((n,c)=>n+(Array.isArray(c.errors)?c.errors.length:0),0)+'。不代表正式 MR 排程、AI 分級或通知正常。';
  target.replaceChildren();
  for(let i=0;i<4;i++){
+   if(activeMR!==null && activeMR!==i)continue;
    const channel=ls[i];const card=document.createElement('div');card.className='collect-group';
    const header=document.createElement('h3');header.textContent=roles[i].full+'｜'+(channel?(channel.items?.length||0)+' 則待核實線索':'無資料');card.append(header);
-   if(channel?.errors?.length){const err=document.createElement('div');err.className='dim';err.textContent='來源異常：'+channel.errors.map(e=>e.source).join('、');card.append(err)}
+   if(channel?.errors?.length){const err=document.createElement('div');err.className='dim health-alert';err.textContent='來源異常：'+channel.errors.map(e=>e.source).join('、');card.append(err)}
    if(!channel?.items?.length){const el=document.createElement('p');el.className='dim';el.textContent='這次沒有取得符合條件的標題，並不代表沒有新事件。';card.append(el)}
    for(const item of (channel?.items||[]).slice(0,10)){
      if(!validHttpURL(item.url))continue;
      const row=document.createElement('div');row.className='source-row';
      const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=item.title||'未命名新聞';row.append(a);
-     const m=document.createElement('span');m.textContent=(item.source||'未標示來源')+' · '+(item.published?isoTime(item.published):'無發稿時間');row.append(m);card.append(row);
+     const m=document.createElement('span');m.textContent=(item.source||'未標示來源')+' · '+(item.published?isoTime(item.published):'無發稿時間')+' · 等級待判／未證實／待人工核實';row.append(m);card.append(row);
    }
    target.append(card)
  }
@@ -123,7 +182,7 @@ loadCollection();
 // Independent, dependency-free 3D orthographic scene renderer.
 // Geometry is modeled in world-space x/y/z and projected on a 2D canvas.
 const canvas=$('scene');const ctx=canvas.getContext('2d');let cw=800,ch=590,dpr=1;
-const camera={yaw:-0.58,pitch:0.76,zoom:1};const objects=[];const actors=[];let lastMouse=null;let dragging=false;let moved=false;let tick=0;
+const camera={yaw:-0.58,pitch:0.76,zoom:1};const objects=[];const actors=[];let lastMouse=null;let dragging=false;let moved=false;let tick=0,lastSceneUI=0,lastFrameTs=-999;
 function resize(){let r=canvas.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);cw=r.width;ch=r.height;canvas.width=Math.round(cw*dpr);canvas.height=Math.round(ch*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
 new ResizeObserver(resize).observe(canvas);resize();
 function project(x,y,z){let c=Math.cos(camera.yaw),s=Math.sin(camera.yaw),wx=x*c-z*s,wz=x*s+z*c;let sc=Math.min(cw/15.6,ch/11.5)*camera.zoom;return {x:cw/2+wx*sc,y:ch*.59+(wz*Math.sin(camera.pitch)-y*Math.cos(camera.pitch))*sc,depth:wz*Math.cos(camera.pitch)+y*Math.sin(camera.pitch)}}
@@ -142,18 +201,134 @@ function desk(r){let x=r.x,z=r.z;groundShadow(x,z,.95,1.4);
  block(x,.17,z+.83,.70,.22,.64,'#506b79');block(x,.27,z+1.12,.70,.65,.12,'#47606b');
  decal(x,.875,z-.86,1.1,.07,r.color);
 }
-function avatar(r,index,ms){let status=state.staff[index];let idle=status==='idle';let move=idle?0.20*Math.sin(ms*.0007+index):0;let x=r.x+move,z=r.z+.80+(idle?0.14*Math.cos(ms*.0005+index):0);if(index===state.selected)groundShadow(x,z,.56,.52);
- let s= status==='work' ?Math.sin(ms*.012+index)*.075:Math.sin(ms*.002+index)*.026;
- const suit=r.color;
- block(x-.16,.05,z,.17,.50,.20,'#273a54');block(x+.16,.05,z,.17,.5,.2,'#283c59');
- block(x,.55,z,.65,.55,.37,suit);block(x,.97,z-.06,.36,.08,.39,'#d7ece9');
- block(x,.94+s,z+.10,.17,.31,.16,'#ddb9a0');block(x-.4,.89-s,z+.04,.15,.34,.15,'#ddb9a0');
- block(x,1.13+(status==='idle'?Math.sin(ms*.003)*.035:0),z,.46,.45,.42,'#e5bba1');
- block(x,1.51,z-.035,.48,.13,.43,'#283b4d');
- block(x-.11,1.34,z+.23,.055,.047,.025,'#30404d');block(x+.11,1.34,z+.23,.055,.047,.025,'#30404d');
- let pos=project(x,1.75,z),pground=project(x,0,z);actors.push({x:pos.x,y:pos.y,groundY:pground.y,index});}
+// Smoothly interpolate between desk and break corners. Every agent has a stable seat.
+function smoothstep(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v)}
+function avatar(r,index,ms){
+ const a=timelineActivity(index,ms),elapsed=(ms-sceneStart)/1000;
+ let dest={x:r.x,z:r.z+.80};
+ // Use different queue spots around the coffee machine, keeping four avatars visible.
+ if(a==='coffee')dest={x:-4.45+index*.20,z:2.85+index*.06};
+ if(a==='pet')dest={x:-.9+index*.46,z:2.95};
+ if(a==='stretch')dest={x:r.x+(index%2===0?-.34:.34),z:r.z+1.0};
+ const prev=avatarMotion[index]||{x:r.x,z:r.z+.80,activity:'work',at:ms};
+ if(prev.activity!==a){prev.activity=a;prev.at=ms;prev.startX=prev.x;prev.startZ=prev.z;}
+ const blend=smoothstep((ms-prev.at)/2000);
+ prev.x=(prev.startX??prev.x)+(dest.x-(prev.startX??prev.x))*blend;
+ prev.z=(prev.startZ??prev.z)+(dest.z-(prev.startZ??prev.z))*blend;
+ // reset anchor after completed transition; avoid continuously easing at every frame.
+ if(blend>=1){prev.x=dest.x;prev.z=dest.z;prev.startX=dest.x;prev.startZ=dest.z;prev.at=ms-2000;}
+ avatarMotion[index]=prev;
+ const x=prev.x,z=prev.z;
+ if(index===state.selected)groundShadow(x,z,.46,.46);
+ const walking=(a==='coffee'||a==='pet')&&blend<1;
+ const leg=Math.sin(ms*.015+index)*.10*(walking?1:.15);
+ const torsoBob=(a==='stretch'?Math.sin(ms*.005+index)*.06:walking?Math.abs(Math.sin(ms*.015))*.045:0);
+ const arm=(a==='work'?Math.sin(ms*.012+index)*.05:(a==='pet'||a==='stretch')?Math.sin(ms*.005+index)*.13:.035);
+ block(x-.16,.05+leg,z,.17,.50,.20,'#283b54');block(x+.16,.05-leg,z,.17,.50,.20,'#283b54');
+ block(x,.56+torsoBob,z,.65,.54,.37,r.color);
+ block(x,.98+torsoBob,z-.06,.36,.07,.39,'#d7ece9');
+ block(x+.42, a==='stretch'?1.11+arm:.89+arm,z+.03,.17,a==='stretch'?.49:.31,.16,'#ddb9a0');
+ block(x-.42,a==='stretch'?1.11-arm:.89-arm,z+.03,.17,a==='stretch'?.49:.31,.16,'#ddb9a0');
+ const nod=a==='nap'?-.15+Math.sin(ms*.002+index)*.02:0;
+ block(x,1.15+torsoBob+nod,z,.46,.44,.42,'#e5bba1');block(x,1.52+torsoBob+nod,z-.035,.48,.13,.43,'#283b4d');
+ if(a==='nap'){
+   block(x-.11,1.33+torsoBob+nod,z+.23,.085,.018,.02,'#30404d');
+   block(x+.11,1.33+torsoBob+nod,z+.23,.085,.018,.02,'#30404d');
+ }else{
+   block(x-.11,1.34+torsoBob+nod,z+.23,.055,.047,.025,'#30404d');
+   block(x+.11,1.34+torsoBob+nod,z+.23,.055,.047,.025,'#30404d');
+ }
+ if(a==='coffee')block(x+.46,1.08+arm,z+.26,.21,.25,.21,'#faf6e9');
+ if(a==='pet')block(x+.46,1.10+arm,z+.22,.19,.16,.18,'#dfb99f');
+ const pos=project(x,1.85+torsoBob+nod,z);actors.push({x:pos.x,y:pos.y,index,activity:a});
+}
+const avatarMotion=[];
+function coffeeCorner(){
+ block(-5.62,.03,2.20,1.15,.90,.72,'#607985');
+ block(-5.62,1.0,2.20,1.05,.07,.71,'#9baba5');
+ block(-5.64,1.1,2.10,.53,.54,.46,'#243b4a');
+ block(-5.64,1.35,2.35,.28,.15,.04,'#73d6ca');
+ block(-5.08,1.0,2.44,.20,.20,.2,'#cdb49b');
+}
+function restCorner(){
+ // Lounge sofa and a small rug at front-left, away from the research desks.
+ decal(-5.05,.052,1.2,2.2,2.1,'#254f54');
+ block(-5.35,.12,.90,1.7,.35,.75,'#416e72');
+ block(-5.35,.30,.52,1.72,.64,.18,'#508788');
+ block(-6.15,.15,.9,.20,.42,.82,'#508788');
+ block(-4.55,.15,.9,.20,.42,.82,'#508788');
+ block(-4.53,.03,2.05,.70,.42,.65,'#826c58');
+}
+function cat(ms){
+ // Lightweight original orange cat with paced wandering, pause and sleep phases.
+ const period=30,phase=(ms/1000)%period;
+ let x,z=3.2,mode='walk';
+ if(phase<9)x=-2.8+phase*.52;
+ else if(phase<13){x=1.88;mode='rest';}
+ else if(phase<22)x=1.88-(phase-13)*.52;
+ else{x=-2.8;mode='sleep'}
+ // Cat-dog greeting, brief chase, and occasional shared rest; never affects MR data.
+ const dg=dogMovement(ms),ds=(ms/1000)%48;
+ if(ds>=11 && ds<17){x=dg.x+.78;z=dg.z+.22;mode='greet'}
+ if(ds>=18 && ds<23){x=dg.x+.8;z=dg.z+.2;mode='follow'}
+ if(ds>=28 && ds<36){x=dg.x-.75;z=dg.z+.1;mode='sleep'}
+ // When a staff member approaches the orange cat, it comes alongside them.
+ const petter=roles.findIndex((_,i)=>timelineActivity(i,ms)==='pet');
+ if(petter>=0){const person=avatarMotion[petter];if(person){x=person.x+.57;z=person.z+.22;mode='pet'}}
+ const step=mode==='walk'?Math.abs(Math.sin(ms*.012))*.055:0;
+ groundShadow(x,z,.62,.44);
+ block(x,.20+step,z,.87,.37,.47,'#da762e');
+ block(x+.42,.36+step,z,.49,.46,.49,'#f5a451');
+ // Pointed ears and short muzzle.
+ block(x+.31,.75+step,z-.17,.17,.20,.17,'#e38c3e');
+ block(x+.55,.75+step,z-.17,.17,.20,.17,'#e38c3e');
+ block(x+.66,.43+step,z+.02,.15,.15,.27,'#ffe0b0');
+ block(x+.39,.54+step,z+.26,.055,mode==='sleep'?.017:.07,.022,'#24343e');
+ block(x+.63,.54+step,z+.26,.055,mode==='sleep'?.017:.07,.022,'#24343e');
+ block(x+.54,.40+step,z+.31,.06,.07,.03,'#a45046');
+ // Tail and paws.
+ block(x-.48,.37+step,z,.19,.50,.15,'#c8652c');
+ block(x-.50+Math.sin(ms*.004)*.06,.79+step,z,.16,.22,.15,'#d77b32');
+ for(const dx of [-.23,.25])for(const dz of [-.19,.20])block(x+dx,.05+step,z+dz,.18,.18,.18,'#f5a451');
+ const p=project(x,1.13,z);return {...p,label:mode==='sleep'?'橘貓 · 睡覺中':mode==='rest'?'橘貓 · 休息中':mode==='greet'?'橘貓 · 和狗打招呼':mode==='follow'?'橘貓 · 跟狗玩':mode==='pet'?'橘貓 · 被摸摸':'橘貓 · 散步中'};
+}
+// Border collie has independently modeled motion from collection / MR state.
+function dogMovement(ms){
+ const sec=(ms/1000)%48;
+ let x=0,z=3.17,mode='wander';
+ if(sec<11){x=-3.45+sec*.48;mode='patrol'}
+ else if(sec<17){x=1.83;mode='greet-cat'}
+ else if(sec<28){x=1.83-(sec-17)*.37;mode='fetch'}
+ else if(sec<36){x=-2.24;mode='nap'}
+ else{x=-2.24+(sec-36)*.19;mode='patrol'}
+ return {x,z,mode};
+}
+function dog(ms){
+ const {x,z,mode}=dogMovement(ms);
+ // A quiet cat-dog greeting and shared rest; no aggressive behavior.
+ const bob=(mode==='patrol'||mode==='fetch')?Math.abs(Math.sin(ms*.012))*.04:0;
+ groundShadow(x,z,.68,.51);
+ const fur='#f0efeb',dark='#263744';
+ for(const dx of [-.28,.28])for(const dz of [-.20,.20])block(x+dx,.02+bob,z+dz,.19,.36,.18,dark);
+ block(x,.32+bob,z,1.14,.49,.52,dark);
+ block(x+.10,.64+bob,z+.06,.55,.14,.42,fur);
+ block(x+.53,.56+bob,z,.54,.62,.52,fur);
+ block(x+.68,.72+bob,z-.25,.15,.31,.15,dark);
+ block(x+.34,.71+bob,z-.25,.15,.30,.15,dark);
+ block(x+.76,.62+bob,z+.30,.10,.09,.06,dark);
+ block(x+.73,.42+bob,z+.37,.23,.14,.23,fur);
+ block(x+.91,.50+bob,z+.35,.08,.08,.07,dark);
+ block(x-.64,.54+bob,z,.18,.42,.18,dark);
+ block(x-.78,.87+bob+Math.sin(ms*.007)*.06,z,.15,.20,.15,fur);
+ if(mode==='fetch'){block(x+.85,.07,z+.85,.24,.24,.24,'#edb86e')}
+ const pos=project(x,1.3,z);
+ const label=mode==='greet-cat'?'邊境牧羊犬 · 跟貓打招呼':mode==='nap'?'邊境牧羊犬 · 休息':mode==='fetch'?'邊境牧羊犬 · 叼球':'邊境牧羊犬 · 巡視中';
+ return {...pos,label};
+}
 function badge(x,y,text,border,selected=false){ctx.font='600 10px system-ui';let w=Math.min(215,ctx.measureText(text).width+19),hh=24;ctx.fillStyle=selected?'#155c65ee':'#0b2639dc';ctx.strokeStyle=border;ctx.lineWidth=selected?1.8:1;ctx.beginPath();ctx.roundRect(x-w/2,y-hh/2,w,hh,7);ctx.fill();ctx.stroke();ctx.fillStyle='#edfbfa';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,x,y,200)}
-function draw(ts){tick=ts;objects.length=0;actors.length=0;ctx.clearRect(0,0,cw,ch);
+function draw(ts){
+ if(reduceMotion && ts-lastFrameTs<150){requestAnimationFrame(draw);return}
+ lastFrameTs=ts;tick=ts;objects.length=0;actors.length=0;ctx.clearRect(0,0,cw,ch);
  // distant floor grid and decorative room foundation
  block(0,-.23,0,13.3,.27,8.7,'#25445a');
  for(let x=-6;x<=6;x+=2)for(let z=-3.75;z<=4;z+=1.5){decal(x,.003,z,1.93,1.43,((x+z)%3===0)?'#355264':'#2d495a')}
@@ -161,17 +336,23 @@ function draw(ts){tick=ts;objects.length=0;actors.length=0;ctx.clearRect(0,0,cw,
  block(0,.03,-4.2,13.3,.34,.16,'#5c8290');block(-6.45,.03,0,.16,.3,8.6,'#53788a');
  // rug and entry walkway
  decal(0,.035,0,12.0,6.8,'#375267');decal(0,.041,0,11.6,6.5,'#2d495c');
- // office objects
+ // office objects + optional enrichment. No impact on collection.
  for(let r of roles)desk(r);
+ coffeeCorner();restCorner();
  block(-5.68,.08,-3.47,.60,1.82,.75,'#4f6574');for(let i=0;i<5;i++)block(-5.65,.36+i*.25,-3.04,.48,.21,.17,['#c69d69','#83b0bd','#c47e70','#90a68c','#9283a9'][i]);
  block(5.7,.04,-3.38,.77,1.25,.87,'#627487');block(5.69,1.20,-3.05,.55,.06,.42,'#cfd7d4');block(5.71,.76,-2.89,.28,.20,.08,'#272f3b');
- plant(-5.72,3.35,1.08);plant(5.64,3.34,.88);
+ plant(-5.72,3.35,1.08);plant(5.64,-3.32,.88);
  block(0,.02,-3.66,2.9,.14,.48,'#335665');block(0,.45,-3.72,2.5,.84,.15,'#6e9b95');block(0,.56,-3.62,2.25,.51,.045,'#173d4a');
  block(0,.02,3.9,2.3,.09,.48,'#436c77');
  for(let i=0;i<4;i++)avatar(roles[i],i,ts);
+ const petTs=autoScene?ts:1000;
+ const catBadge=cat(petTs);
+ const dogBadge=dog(petTs);
  objects.sort((a,b)=>a.depth-b.depth);
  for(let ob of objects){let verts=ob.vertices;if(verts.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)))continue;ctx.globalAlpha=ob.alpha;ctx.fillStyle=ob.color;ctx.beginPath();ctx.moveTo(verts[0].x,verts[0].y);for(let j=1;j<verts.length;j++)ctx.lineTo(verts[j].x,verts[j].y);ctx.closePath();ctx.fill();}ctx.globalAlpha=1;
  for(let p of actors){let r=roles[p.index];let label=(p.index+1).toString().padStart(2,'0')+' · '+r.short;let y=p.y-14;badge(p.x,y,label,r.color,state.selected===p.index)}
+ badge(catBadge.x,catBadge.y-7,catBadge.label,'#d99055');
+ badge(dogBadge.x,dogBadge.y-7,dogBadge.label,'#c0d2de');
  requestAnimationFrame(draw)
 }
 requestAnimationFrame(draw);
